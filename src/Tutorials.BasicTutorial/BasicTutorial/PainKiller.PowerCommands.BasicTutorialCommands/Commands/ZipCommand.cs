@@ -13,10 +13,9 @@ public class ZipCommand : CommandBase<CommandsConfiguration>
         if (string.IsNullOrEmpty(Input.Path)) return BadParameterError("A valid path must be provided as argument");
 
         var filter = GetOptionValue("filter");
-        var output = GetOptionValue("output");
         WriteHeadLine($"Zipping files in directory: {Input.Path}...");
         
-        var zipResult = ZipService.Service.ArchiveFilesInDirectory(Input.Path, "example", useTimestampSuffix: true, filter: string.IsNullOrEmpty(filter) ? "*" : filter, outputDirectory: output);
+        var zipResult = ZipService.Service.ArchiveFilesInDirectory(Input.Path, "example", useTimestampSuffix: true, filter: string.IsNullOrEmpty(filter) ? "*" : filter);
         Console.WriteLine();
         
         WriteHeadLine("Result");
