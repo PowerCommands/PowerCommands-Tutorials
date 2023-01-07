@@ -3,6 +3,8 @@
 This tutorial will guide you trough the process of the creation of and the design of a PowerCommands solution. We will creating a small and simple project that has only one Command that are compressing file from a given directory to a zip file. After this you will understand the core principles and the power of PowerCommands.
 
 ## Create a new PowerCommands Visual Studio solution
+This requires that you have done the [Preparations](../README.md) where you downloaded the VS template and put it in your **%USERPROFILE%\Documents\Visual Studio \Templates\ProjectTemplates** directory.
+
 Start your Visual Studio -> [Create new project] -> [PowerCommands Solution]
 
 You can choose any name you want, for this tutorial the project name is **BasicTutorial** and the solution is named Tutorials.BasicTutorial.
