@@ -21,7 +21,7 @@ This will give you a "Hello world" result and some instructions, you could also 
 ## Create the Zip command
 In this tutorial we use the manually way, create a new class file named **ZipCommand** in the **Commands** directory in the **PainKiller.PowerCommands.BasicTutorialCommands** project.
 
-The class inherits the **bla bla bla** base class that will give your Command a lot of helper methods that will be explained in this and other tutorials.
+The class inherits the **CommandBase<CommandsConfiguration>** base class that will give your Command a lot of helper methods that will be explained in this and other tutorials.
 ![Alt text](images/basic_power_command.png?raw=true "New solution")
 This is actually enough to be a valid command, if you start PowerCommands again you will notice that the text of your input will turn blue if you type zip.
 ![Alt text](images/basic_power_command_zip.png?raw=true "New solution")
@@ -41,13 +41,13 @@ What is the use case here?
 - The user wants to zip files in a given directory
 - The user may use a filter to select files that matches a certain file extension like *.txt for all text files.
 
-What do we need? The ZipCommand needs the path for the directory to be zipped, and a option to add a filter and an option to provide the output path. Lets start with adding a **PowerCommandsDesign** attribute like this.
+What do we need? The ZipCommand needs the path for the directory to be zipped, and a option to add a filter. Lets start with adding a **PowerCommandsDesign** attribute like this.
 
 ```
 [PowerCommandDesign(description: "Zip files of a given path, filter could be use to select only certain files that matches the filter",
                       arguments: "<directory>",
                          quotes: "<directory>",
-                        options: "!filter|!output",
+                        options: "!filter",
                   example: "zip \"c:\\temp\"|zip \"c:\\temp\" --filter *.txt")]                  
 ```
 With this attribute added to the Zip class we will get some benefits like:
@@ -55,7 +55,7 @@ With this attribute added to the Zip class we will get some benefits like:
 ```
 zip --help
 ```
-But that is not all, on the options some validation will be triggered, the use of ! before the name of the option will do that if the filter or output option is provided they must also have a value. This means that you do not have to write code to validate this your self. In this tutorial we will not dig deeper than this when it comes to the **PowerCommandsDesign** attribute.
+But that is not all, on the options some validation will be triggered, the use of ! before the name of the option will do that if the filter option is provided they must also have a value. This means that you do not have to write code to validate this your self. In this tutorial we will not dig deeper than this when it comes to the **PowerCommandsDesign** attribute.
 
 ## Implementation code sample
 We wil use the built in ZipService that is used to archive log files to actually zip the files so we do not need to write that code. But we need some implementation code to provide the ZipService with some parameters. The ZipService needs the Path to a valid directory to Zip the files in that directory. We could also use a output directory parameter if we want.
@@ -129,7 +129,7 @@ One other **BIG** exception is of course if you are printing out sensitive value
 [PowerCommandDesign(description: "Zip files of a given path, filter could be use to select only certain files that matches the filter",
                       arguments: "<directory>",
                          quotes: "<directory>",
-                        options: "!filter|!output",
+                        options: "!filter",
                   example: "zip \"c:\\temp\"|zip \"c:\\temp\" --filter *.txt")]
 public class ZipCommand : CommandBase<CommandsConfiguration>
 {
@@ -165,16 +165,6 @@ As you could see there is some alternative ways to handle errors, in the beginni
 But at the end of the run method we checked the zipResult if it has any exception, if so we just print out that to the Console, there is no right or wrong here.
 
 The whole **Run** function is encapsulated in a try/catch block if a unhandled error occurs that will be handled by the runtime. The error description will be printed out in the console and the Exception will be logged in the log file.
-
-## Bonus material
-We did not complete the whole use case, the one thing missing is the output folder option. Lets add that first we collect the input like this.
-```
-var output = GetOptionValue("output");
-```
-Then we change this row a bit.
-```
-var zipResult = ZipService.Service.ArchiveFilesInDirectory(Input.Path, "example", useTimestampSuffix: true, filter: string.IsNullOrEmpty(filter) ? "*" : filter, outputDirectory: output);
-```
 
 **Now this tutorial is complete!**
 The sample code for this tutorial is located [here](../src/Tutorials.BasicTutorial/)
