@@ -1,10 +1,10 @@
 ﻿using PainKiller.PowerCommands.Core.Commands;
 
-namespace PainKiller.PowerCommands.BasicTutorialCommands.Commands
+namespace PainKiller.PowerCommands.BabarCommands.Commands
 {
     [PowerCommandDesign(description: "List the content of the working directory or this applications app directory, with the option to open the directory with the File explorer ",
-        options: "open|app",
-        example: "//List the content and open the current working directory|dir --open|//Open the AppData roaming directory|dir --app --open")]
+                            options: "open|app",
+                            example: "//List the content and open the current working directory|dir --open|//Open the AppData roaming directory|dir --app --open")]
     public class DirCommand : CdCommand
     {
         public DirCommand(string identifier, CommandsConfiguration configuration) : base(identifier, configuration) { }
