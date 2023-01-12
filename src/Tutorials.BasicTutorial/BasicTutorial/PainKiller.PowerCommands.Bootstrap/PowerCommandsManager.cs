@@ -12,7 +12,7 @@ using PainKiller.PowerCommands.Shared.Enums;
 
 namespace PainKiller.PowerCommands.Bootstrap
 {
-    public class PowerCommandsManager : IPowerCommandsManager
+    public partial class PowerCommandsManager : IPowerCommandsManager
     {
         public readonly IExtendedPowerCommandServices<PowerCommandsConfiguration> Services;
         public PowerCommandsManager(IExtendedPowerCommandServices<PowerCommandsConfiguration> services) { Services = services; }

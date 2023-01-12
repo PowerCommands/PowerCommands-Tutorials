@@ -1,10 +1,10 @@
 ﻿namespace PainKiller.PowerCommands.BasicTutorialCommands.Commands;
 
 [PowerCommandDesign(description: "Zip files of a given path, filter could be use to select only certain files that matches the filter",
-                      arguments: "<directory>",
-                         quotes: "<directory>",
-                        options: "!filter",
-                        example: "zip \"c:\\temp\"|zip \"c:\\temp\" --filter *.txt")]
+    arguments: "<directory>",
+    quotes: "<directory>",
+    options: "!filter",
+    example: "zip \"c:\\temp\"|zip \"c:\\temp\" --filter *.txt")]
 public class ZipCommand : CommandBase<CommandsConfiguration>
 {
     public ZipCommand(string identifier, CommandsConfiguration configuration) : base(identifier, configuration) { }

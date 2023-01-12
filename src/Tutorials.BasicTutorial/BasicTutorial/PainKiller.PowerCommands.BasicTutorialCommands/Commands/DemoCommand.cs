@@ -35,6 +35,8 @@ namespace PainKiller.PowerCommands.BasicTutorialCommands.Commands
             {
                 WriteLine($"Raw input: {powerOption} Value: {GetOptionValue(powerOption.Replace("--", ""))}\n");
             }
+            WriteHeadLine("Path value, witch is the first valid path in the input.");
+            WriteLine(Input.Path);
             return Ok();
         }
     }
