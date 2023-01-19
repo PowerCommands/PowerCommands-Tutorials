@@ -6,6 +6,7 @@ configuration:
   repository: https://github.com/PowerCommands/PowerCommands2022
   backupPath: ..\..\..\..\Core\PainKiller.PowerCommands.Core\  
   defaultGitRepositoryPath: ..\..\..\..\..\..\..\
+  defaultMegabytesFileSize: 10
   metadata:
     name: FileHandling
     description: Description of my project

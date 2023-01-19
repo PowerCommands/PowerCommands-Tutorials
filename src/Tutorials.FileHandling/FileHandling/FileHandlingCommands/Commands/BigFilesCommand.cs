@@ -21,7 +21,8 @@ public class BigFilesCommand : CommandBase<PowerCommandsConfiguration>
     public override async Task<RunResult> RunAsync()
     {
         var path = CdCommand.WorkingDirectory;
-        var minFileSize = Input.OptionToInt("megabytes", 1);
+        var defaultFileSize = Configuration.DefaultMegabytesFileSize;
+        var minFileSize = Input.OptionToInt("megabytes", defaultFileSize);
         var rootDirectory = new DirectoryInfo(path);
         await RunIterations(rootDirectory, minFileSize);
 

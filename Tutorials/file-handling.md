@@ -1,4 +1,4 @@
-# PowerCommands - File handling
+# PowerCommands - File handling part I
 
 This tutorial will guide you trough the process of the creation of and the design of a PowerCommands solution. We will creating a project that show you how you easily can integrate the file system in your PowerCommands Console application.
 
@@ -124,6 +124,6 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\NativeImages\system.ni.dll 12 Me
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\clr.dll 11 Megabytes
 ```
 
-In the next tutorial I will add just how to customize the configuration to handle the default file size that is hardcoded in this example, and I will also implement code completion to select a valid directory from the subdirectories from the current working directory. Not best use case maybe but a good to know how to implement files and folders with code completion.
+In the next tutorial I will add just how to customize the configuration to handle the default file size that is hardcoded in this example.
 
-[File handling part II](file-handling2.md)
+[Files and directories part II - use custom configuration](file-handling2.md)

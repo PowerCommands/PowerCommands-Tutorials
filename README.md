@@ -14,10 +14,10 @@ Setup the VS Template to create new Solution for your PowerCommands project.
 
 This tutorial will guide you trough the process of the creation of and the design of a PowerCommands solution. We will creating a small and simple project that has only one Command that are compressing file from a given directory to a zip file. After this you will understand the core principles and the power of PowerCommands.
 
-[File handling part I](/Tutorials/file-handling.md)
+[Files and directories part I - understand working directory and navigation](/Tutorials/file-handling.md)
 
-In this tutorial we go trough how to handle files and directories and how we can run the async method instead of the default run method. This tutorial will also show you how to add your custom configuration and use it in your Command class.
+In this tutorial we go trough how to handle directories and how we can run the **async** method instead of the default run method.
 
-[File handling part II](/Tutorials/file-handling2.md)
+[Files and directories part II - use custom configuration](/Tutorials/file-handling2.md)
 
-We extend the tutorial from part I and add a path option to the command and show how we could make it use code completion and show the current sub directories of the current working directory, without writing any implementation code, just by using a different base class and implementing a interface.
+We extend the tutorial from part I and look at how to add your custom configuration and use it in your Command class.
