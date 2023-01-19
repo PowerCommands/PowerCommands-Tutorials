@@ -4,7 +4,7 @@
 
 ## Preparations
 Setup the VS Template to create new Solution for your PowerCommands project.
-- Download the template [Visual Studio project template](https://github.com/PowerCommands/PowerCommands2022/tree/main/Templates/Artifact)
+- Download the template [Visual Studio project template](https://github.com/PowerCommands/PowerCommands2022/tree/main/Templates)
 - Copy the .zip file into the user project template directory. By default, this directory is %USERPROFILE%\Documents\Visual Studio \Templates\ProjectTemplates.
 - Open Visual Studio and write Power in the searchbox, you should find the PowerCommand template.
 ![Alt text](Tutorials/images/vs_new_solution.png?raw=true "New solution")

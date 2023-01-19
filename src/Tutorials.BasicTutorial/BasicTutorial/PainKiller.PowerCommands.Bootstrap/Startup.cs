@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using PainKiller.PowerCommands.BasicTutorialCommands;
-using PainKiller.PowerCommands.BasicTutorialCommands.Configuration;
+﻿using BasicTutorialCommands;
+using BasicTutorialCommands.Configuration;
+using Microsoft.Extensions.Logging;
 using PainKiller.PowerCommands.Core.Managers;
 using PainKiller.PowerCommands.Core.Services;
 

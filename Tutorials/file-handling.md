@@ -3,7 +3,7 @@
 This tutorial will guide you trough the process of the creation of and the design of a PowerCommands solution. We will creating a project that show you how you easily can integrate the file system in your PowerCommands Console application.
 
 ## Create a new PowerCommands Visual Studio solution
-This requires that you have done the [Preparations](../README.md) where you downloaded the VS template and put it in your **%USERPROFILE%\Documents\Visual Studio \Templates\ProjectTemplates** directory. And that you are familiar with how to create a new PowerCommands solution as described in [The basics](the-basics.md) tutorial. This project will have the name **FileHandlingTutorial** and the Solution name is **Tutorials.FileHandlingTutorial** the names or of course not that important.
+This requires that you have done the [Preparations](../README.md) where you downloaded the VS template and put it in your **%USERPROFILE%\Documents\Visual Studio \Templates\ProjectTemplates** directory. And that you are familiar with how to create a new PowerCommands solution as described in [The basics](the-basics.md) tutorial. This project will have the name **FileHandling** and the Solution name is **Tutorials.FileHandling** the names or of course not that important.
 
 ## Use case
 - The user wants to find big files in the current working directory
@@ -108,9 +108,22 @@ bigfiles
 This will probably go very fast and no files will be found, in my case the log file was bigger then 1 MB.
 ![Alt text](images/file-handling.png?raw=true "New solution")
 If you run the **dir** you see that the current working directory is the bin folder of the PowerCommand console.
-You can use the cd command to navigate to a folder where you suspect to find a lot of bigger files and try the 
-bigfile command again.
-
+You can use the cd command to navigate to a folder where you suspect to find a lot of bigger files and try the  ```bigfile``` command again.
+```
+cd "C:\Windows\Microsoft.NET"
+bigfile --megabytes 10
+```
 You will see a progress where the files are printed out to the console, all on the same row that is because the command uses the helper method **OverwritePreviousLine(fileInfo.Name);**.
 
-Later I will add just how to customize the configuration so that we can set a default file size in MB, and change the implementation code so it uses that instead of the hardcoded 1 Mb.
+On my machine I found a couple of files with the size of 10 MB or bigger.
+```
+Big files found over 10 MB:
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\NativeImages\mscorlib.ni.dll 20 Megabytes
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\NativeImages\mscorlib.ni.dll 22 Megabytes
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\NativeImages\system.ni.dll 12 Megabytes
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\clr.dll 11 Megabytes
+```
+
+In the next tutorial I will add just how to customize the configuration to handle the default file size that is hardcoded in this example, and I will also implement code completion to select a valid directory from the subdirectories from the current working directory. Not best use case maybe but a good to know how to implement files and folders with code completion.
+
+[File handling part II](file-handling2.md)

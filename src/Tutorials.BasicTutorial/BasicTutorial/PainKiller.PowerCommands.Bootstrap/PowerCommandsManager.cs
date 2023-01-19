@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using PainKiller.PowerCommands.BasicTutorialCommands.Configuration;
+﻿using BasicTutorialCommands.Configuration;
+using Microsoft.Extensions.Logging;
 using PainKiller.PowerCommands.Configuration.DomainObjects;
 using PainKiller.PowerCommands.Core.Commands;
 using PainKiller.PowerCommands.Core.Extensions;

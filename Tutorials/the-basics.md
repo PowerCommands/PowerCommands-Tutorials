@@ -7,7 +7,7 @@ This requires that you have done the [Preparations](../README.md) where you down
 
 Start your Visual Studio -> [Create new project] -> [PowerCommands Solution]
 
-You can choose any name you want, for this tutorial the project name is **BasicTutorial** and the solution is named Tutorials.BasicTutorial.
+You can choose any name you want, for this tutorial the project name is **Basic** and the solution is named Tutorials.Basic.
 
 ![Alt text](images/vs_new_basic_tutorial.png?raw=true "New solution")
 
