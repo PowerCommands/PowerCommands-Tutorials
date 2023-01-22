@@ -4,7 +4,7 @@ namespace FileHandlingCommands.Commands;
 
 [PowerCommandDesign(description: "Analyze the current working directory and its subdirectories and find big files, that are either of an default size set in config or a given one by the user input using the option --megabytes.",
                         options: "megabytes",
-                        example: "bigfiles --megabytes 1024",
+                        example: "bigfiles --megabytes 10",
                        useAsync: true)]
 public class BigFilesCommand : CommandBase<PowerCommandsConfiguration>
 {
