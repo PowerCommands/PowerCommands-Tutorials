@@ -21,3 +21,7 @@ In this tutorial we go trough how to handle directories and how we can run the *
 [Files and directories part II - use custom configuration](/Tutorials/file-handling2.md)
 
 We extend the tutorial from part I and look at how to add your custom configuration and use it in your Command class.
+
+[Setup a project that uses Microsoft Azure CognitiveServices](/Tutorials/cognitive-services.md)
+
+This example requires a Microsoft Azure account, no credits needed though the image recognition service is free to try out in a small scale. In this tutorial you will see how you can use environment variables in your **Command** class.
