@@ -6,6 +6,7 @@ configuration:
   repository: https://github.com/PowerCommands/PowerCommands2022
   backupPath: ..\..\..\..\Core\PainKiller.PowerCommands.Core\  
   defaultGitRepositoryPath: ..\..\..\..\..\..\..\
+  pathToDockerDesktop: C:\Program Files\Docker\Docker
   metadata:
     name: PowerML
     description: Description of my project

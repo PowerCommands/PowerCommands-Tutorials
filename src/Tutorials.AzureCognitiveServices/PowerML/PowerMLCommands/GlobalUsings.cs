@@ -2,6 +2,7 @@
 
 global using PainKiller.PowerCommands.Configuration;
 global using PainKiller.PowerCommands.Configuration.DomainObjects;
+global using PainKiller.PowerCommands.Core.Commands;
 global using PainKiller.PowerCommands.Core.Extensions;
 global using PainKiller.PowerCommands.Core.Managers;
 global using PainKiller.PowerCommands.Core.Services;
