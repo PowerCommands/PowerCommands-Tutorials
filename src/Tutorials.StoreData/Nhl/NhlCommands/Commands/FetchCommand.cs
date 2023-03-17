@@ -7,16 +7,16 @@ namespace NhlCommands.Commands;
                         useAsync: true,
                          options: "no-save",
                          example: "//Fetch the season 2022/2023 stats|fetch 2023")]
-public class FetchCommand : CommandBase<PowerCommandsConfiguration>
+public class FetchCommand : NhlBaseCommand
 {
-    private readonly PlayersDb _playersDb = StorageService<PlayersDb>.Service.GetObject();
+    
     public FetchCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
     public override async Task<RunResult> RunAsync()
     {
         var seasonId = Input.FirstArgumentToInt();
 
         var seasonStats = await GetSeason(seasonId);
-        if(seasonStats.Total > 0 && !Input.HasOption("no-save")) SaveSeason(seasonStats, seasonId);
+        if(seasonStats.Total > 0 && !Input.HasOption("no-save")) UpdateSeason(seasonStats, seasonId);
         var rank = 1;
         foreach (var player in seasonStats.Data)
         {
@@ -31,21 +31,18 @@ public class FetchCommand : CommandBase<PowerCommandsConfiguration>
 
     public async Task<Season> GetSeason(int seasonId)
     {
-        WriteLine("Fetching players from rank 1 to 100...");
-        Thread.Sleep(1000);
-        var retVal = await GetSeasonData(seasonId, 1);
-        var fetchMorePlayers = true;
-        var start = 101;
-        var maxIterations = 10;
-        var iterationCounter = 1;
-        while (fetchMorePlayers)
+        var retVal = new Season { SeasonId = seasonId, Data = new()};
+        var start = 1;
+        var maxIterations = 15;
+        
+        for(int  i = 0; i < maxIterations; i++)
         {
-            WriteLine($"Fetching players from rank {start} to {retVal.Data.Count}...");
             var moreSeasonPlayers = await GetSeasonData(seasonId, start);
+            WriteLine($"Fetching players from rank {start} to {retVal.Data.Count + moreSeasonPlayers.Data.Count}...");
             retVal.Data.AddRange(moreSeasonPlayers.Data);
-            fetchMorePlayers = moreSeasonPlayers.Data.Count != 0;
-            if(iterationCounter > maxIterations)  break;
-            iterationCounter++;
+            retVal.Total = moreSeasonPlayers.Total;
+            var fetchMorePlayers = moreSeasonPlayers.Data.Count == 100;
+            if(!fetchMorePlayers)  break;
             start += 100;
             Thread.Sleep(1000);
         }
@@ -72,14 +69,13 @@ public class FetchCommand : CommandBase<PowerCommandsConfiguration>
             return new Season();
         }
     }
-    public void SaveSeason(Season season, int seasonId)
+    public void UpdateSeason(Season season, int seasonId)
     {
         season.SeasonId = seasonId;
-        var seasons = StorageService<SeasonsDb>.Service.GetObject();
-        var existing = seasons.SeasonStats.FirstOrDefault(s => s.SeasonId == season.SeasonId);
-        if (existing != null) seasons.SeasonStats.Remove(existing);
-        seasons.SeasonStats.Add(season);
-        StorageService<SeasonsDb>.Service.StoreObject(seasons);
+        var existing = SeasonsDb.SeasonStats.FirstOrDefault(s => s.SeasonId == season.SeasonId);
+        if (existing != null) SeasonsDb.SeasonStats.Remove(existing);
+        SeasonsDb.SeasonStats.Add(season);
+        SaveSeasonsDB();
         WriteSuccessLine($"Season {seasonId - 1}{seasonId} saved!");
     }
 
@@ -88,14 +84,11 @@ public class FetchCommand : CommandBase<PowerCommandsConfiguration>
         var hasChanges = false;
         foreach (var playerStat in playerStats)
         {
-            if(_playersDb.Players.Any(p => p.SkaterFullName == playerStat.SkaterFullName)) continue;
+            if(PlayersDb.Players.Any(p => p.SkaterFullName == playerStat.SkaterFullName)) continue;
             hasChanges = true;
-            _playersDb.Players.Add(new Player{SkaterFullName = playerStat.SkaterFullName});
+            PlayersDb.Players.Add(new Player{SkaterFullName = playerStat.SkaterFullName});
             WriteLine($"Added player {playerStat.SkaterFullName}");
         }
-        if (hasChanges)
-        {
-            StorageService<PlayersDb>.Service.StoreObject(_playersDb);
-        }
+        if (hasChanges) SavePlayersDB();
     }
 }
