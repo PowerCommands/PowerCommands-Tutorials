@@ -1,6 +1,6 @@
 ﻿namespace NhlCommands.DomainObjects;
 
-public class Seasons
+public class SeasonsDb
 {
     public List<Season> SeasonStats { get; set; } = new();
 }
