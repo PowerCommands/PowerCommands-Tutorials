@@ -29,4 +29,3 @@ public class PlayerStat
     public string TeamAbbrevs { get; set; } = string.Empty;
     public float TimeOnIcePerGame { get; set; }
 }
-
