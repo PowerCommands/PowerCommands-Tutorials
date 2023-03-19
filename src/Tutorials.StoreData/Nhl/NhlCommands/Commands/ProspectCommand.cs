@@ -5,6 +5,7 @@ namespace NhlCommands.Commands;
 
 
 [PowerCommandDesign( description: "Fetch prospect data from NHL api",
+                         options: "update",
                         useAsync: true,
                          example: "prospect")]
 public class ProspectCommand : NhlBaseCommand
@@ -13,11 +14,21 @@ public class ProspectCommand : NhlBaseCommand
     public override async Task<RunResult> RunAsync()
     {
         var updatedProspects = await GetUpdateProspects();
-        if (updatedProspects.Count > 0)
+        if (updatedProspects.Count > 0 && HasOption("update"))
         {
             ProspectsDb.Prospects.AddRange(updatedProspects);
             SaveProspectsDB();
             WriteSuccessLine("Updated prospects saved!");
+        }
+        else
+        {
+            Console.Clear();
+            var prospectCount = 0;
+            foreach (var prospect in ProspectsDb.Prospects)
+            {
+                prospectCount++;
+                WriteLine($"{prospectCount.ToString(),4} {prospect.FullName} {prospect.BirthCountry} {prospect.AmateurTeam.Name}");
+            }
         }
         return Ok();
     }
@@ -35,7 +46,11 @@ public class ProspectCommand : NhlBaseCommand
                     foreach (var draftPick in round.Picks)
                     {
                         counter++;
-                        if (ProspectsDb.Prospects.Any(p => p.Id == draftPick.Prospect.Id)) continue;
+                        if (ProspectsDb.Prospects.Any(p => p.Id == draftPick.Prospect.Id))
+                        {
+                            WriteLine("Already exist, skipping...");
+                            continue;
+                        }
                         var prospect = await GetProspect(draftPick.Prospect.Id);
                         if (prospect.Id > 0)
                         {
@@ -58,8 +73,11 @@ public class ProspectCommand : NhlBaseCommand
             var response = await httpClient.GetAsync(url);
             var responseString = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
-            var prospect = JsonSerializer.Deserialize<ProspectsDb>(responseString, options) ?? new ();
-            return prospect.Prospects.First();
+            var prospects = JsonSerializer.Deserialize<ProspectsDb>(responseString, options) ?? new ();
+            var prospect = prospects.Prospects.First();
+            var player = await GetNhlPlayer(prospect);
+            prospect.Nationality = player.Nationality;
+            return prospect;
         }
         catch (Exception ex)
         {

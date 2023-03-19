@@ -3,9 +3,10 @@ using System.Text.Json;
 
 namespace NhlCommands.Commands;
 
-[PowerCommandDesign( description: "Fetch draft data from NHL api",
-                         options: "!start-year|update",
+[PowerCommandDesign( description: "Fetch draft data from NHL api to build up your base data or just display drafts from the local database file.",
+                         options: "year|take|countries|!start-year|update",
                         useAsync: true,
+                     suggestions: "SWE|FIN|CAN|USA",
                          example: "draft")]
 public class DraftCommand : NhlBaseCommand
 {
@@ -14,29 +15,50 @@ public class DraftCommand : NhlBaseCommand
     public override async Task<RunResult> RunAsync()
     {
         var startYear = Input.OptionToInt("start-year", 2000);
-        if (Input.HasOption("update"))
+        if (HasOption("update"))
         {
             var drafts = await GetDrafts(startYear);
             UpdateDraftsDB(drafts);
         }
         else
         {
-            foreach (var draftYear in DraftsDb.DraftYears)
+            var draftsCount = 0;
+            var year = Input.OptionToInt("year");
+            var take = Input.OptionToInt("take", 100000);
+            var picks = new List<DraftPick>();
+            foreach (var draftYear in DraftsDb.DraftYears.Where(d => d.Year == year || year == 0))
             {
-                WriteLine($"Draft year count: {draftYear.Drafts.Count}");
                 foreach (var draft in draftYear.Drafts)
                 {
-                    WriteLine($"Rounds count: {draft.Rounds.Length}");
                     foreach (var round in draft.Rounds)
                     {
-                        WriteLine($"{round.Round} Picks count: {round.Picks}");
                         foreach (var draftPick in round.Picks)
                         {
-                            WriteLine($"{draftPick.Prospect.FullName}");
+                            picks.Add(draftPick);
                         }
                     }
                 }
             }
+            var countries = GetOptionValue("countries").Split(',');
+            var prospects = new List<Prospect>();
+            foreach (var draftPick in picks.Take(take))
+            {
+                var prospect = ProspectsDb.Prospects.FirstOrDefault(p => p.Id == draftPick.Prospect.Id) ?? new Prospect { BirthCity = "?", BirthCountry = "?", AmateurLeague = new ProspectAmateurLeague { Name = "?" }, AmateurTeam = new ProspectAmateurTeam { Name = "?" } };
+                prospects.Add(prospect);
+                if(countries.Length > 0 && countries.All(c => c != $"{prospect.Nationality}")) continue;
+                draftsCount++;
+                WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
+            }
+            WriteLine($"Total drafts count:{draftsCount}");
+            if(countries.Length > 0 )
+            {
+                foreach (var country in countries)
+                {
+                    var countryCount = prospects.Count(p => p.BirthCountry == country);
+                    WriteLine($"{country}: {countryCount}");
+                }
+            }
+            Console.Write(ConfigurationGlobals.Prompt);
         }
         return Ok();
     }

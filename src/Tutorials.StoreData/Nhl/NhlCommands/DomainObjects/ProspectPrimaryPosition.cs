@@ -1,6 +1,6 @@
 ﻿namespace NhlCommands.DomainObjects;
 
-public class ProspectPrimaryPosition
+public class PrimaryPosition
 {
     public string Code { get; set; }
     public string Name { get; set; }

@@ -9,14 +9,13 @@ namespace NhlCommands.Commands;
                          example: "//Fetch the season 2022/2023 stats|fetch 2023")]
 public class FetchCommand : NhlBaseCommand
 {
-    
     public FetchCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
     public override async Task<RunResult> RunAsync()
     {
         var seasonId = Input.FirstArgumentToInt();
 
         var seasonStats = await GetSeason(seasonId);
-        if(seasonStats.Total > 0 && !Input.HasOption("no-save")) UpdateSeason(seasonStats, seasonId);
+        if(seasonStats.Total > 0 && !HasOption("no-save")) UpdateSeason(seasonStats, seasonId);
         var rank = 1;
         foreach (var player in seasonStats.Data)
         {
@@ -24,7 +23,6 @@ public class FetchCommand : NhlBaseCommand
             rank++;
         }
         WriteSuccessLine($"{seasonStats.Data.Count} players fetched from nhl.com");
-        UpdatePlayers(seasonStats.Data);
         Console.Write(ConfigurationGlobals.Prompt);
         return Ok();
     }
@@ -77,18 +75,5 @@ public class FetchCommand : NhlBaseCommand
         SeasonsDb.SeasonStats.Add(season);
         SaveSeasonsDB();
         WriteSuccessLine($"Season {seasonId - 1}{seasonId} saved!");
-    }
-
-    public void UpdatePlayers(List<PlayerStat> playerStats)
-    {
-        var hasChanges = false;
-        foreach (var playerStat in playerStats)
-        {
-            if(PlayersDb.Players.Any(p => p.SkaterFullName == playerStat.SkaterFullName)) continue;
-            hasChanges = true;
-            PlayersDb.Players.Add(new Player{SkaterFullName = playerStat.SkaterFullName});
-            WriteLine($"Added player {playerStat.SkaterFullName}");
-        }
-        if (hasChanges) SavePlayersDB();
     }
 }

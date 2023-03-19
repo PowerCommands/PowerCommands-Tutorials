@@ -2,5 +2,5 @@
 
 public class PlayersDb
 {
-    public List<Player> Players { get; set; } = new();
+    public List<Player> People { get; set; } = new();
 }
