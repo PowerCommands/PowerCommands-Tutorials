@@ -15,6 +15,7 @@ public class Player
     public string Height { get; set; }
     public int Weight { get; set; }
     public bool Active { get; set; }
+    public bool Drafted { get; set; }
     public bool Rookie { get; set; }
     public string ShootsCatches { get; set; }
     public string RosterStatus { get; set; }

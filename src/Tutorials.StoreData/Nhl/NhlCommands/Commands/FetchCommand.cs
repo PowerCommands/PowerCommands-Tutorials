@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace NhlCommands.Commands;
 
-[PowerCommandDesign( description: "Description of your command...",
+[PowerCommandDesign( description: "Fetch season player stats from nhl.com",
                         useAsync: true,
                          options: "no-save",
                          example: "//Fetch the season 2022/2023 stats|fetch 2023")]
@@ -17,12 +17,32 @@ public class FetchCommand : NhlBaseCommand
         var seasonStats = await GetSeason(seasonId);
         if(seasonStats.Total > 0 && !HasOption("no-save")) UpdateSeason(seasonStats, seasonId);
         var rank = 1;
+        var newNhlPlayerFound = false;
         foreach (var player in seasonStats.Data)
         {
-            WriteLine($"{rank}. {player.SkaterFullName} {player.Points} ({player.Goals}+{player.Assists}) {player.TeamAbbrevs}");
+            var nationality = "";
+            var existing = PlayersDb.People.FirstOrDefault(p => p.Id == player.PlayerId);
+            if (existing == null)
+            {
+                var nhlPlayer = await GetNhlPlayer(player.PlayerId);
+                if (nhlPlayer.Id > 0)
+                {
+                    nationality = $"{nhlPlayer.Nationality}";
+                    PlayersDb.People.Add(nhlPlayer);
+                    newNhlPlayerFound = true;
+                }
+            }
+            else nationality = existing.Nationality;
+            
+            WriteLine($"{rank}. {player.SkaterFullName} {nationality} {player.Points} ({player.Goals}+{player.Assists}) {player.TeamAbbrevs}");
             rank++;
         }
         WriteSuccessLine($"{seasonStats.Data.Count} players fetched from nhl.com");
+        if (newNhlPlayerFound)
+        {
+            SavePlayersDB();
+            WriteSuccessLine("New players saved to file.");
+        }
         Console.Write(ConfigurationGlobals.Prompt);
         return Ok();
     }
