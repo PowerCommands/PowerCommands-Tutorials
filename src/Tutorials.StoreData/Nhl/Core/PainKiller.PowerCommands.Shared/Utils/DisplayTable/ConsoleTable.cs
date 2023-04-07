@@ -24,7 +24,7 @@ namespace PainKiller.PowerCommands.Shared.Utils.DisplayTable
         public ConsoleTable(params string[] columns) : this(new ConsoleTableOptions { Columns = new List<string>(columns) }) { }
         public ConsoleTable(ConsoleTableOptions options)
         {
-            Options = options ?? throw new ArgumentNullException("options");
+            Options = options ?? throw new ArgumentNullException(nameof(options));
             Rows = new List<object[]>();
             Columns = new List<object>(options.Columns);
         }
@@ -79,7 +79,7 @@ namespace PainKiller.PowerCommands.Shared.Utils.DisplayTable
             // find the longest column by searching each row
             var columnLengths = ColumnLengths();
 
-            // set right alinment if is a number
+            // set right alignment if is a number
             var columnAlignment = Enumerable.Range(0, Columns.Count)
                 .Select(GetNumberAlignment)
                 .ToList();
@@ -188,7 +188,7 @@ namespace PainKiller.PowerCommands.Shared.Utils.DisplayTable
         }
         private string Format(List<int> columnLengths, char delimiter = '|')
         {
-            // set right alinment if is a number
+            // set right alignment if is a number
             var columnAlignment = Enumerable.Range(0, Columns.Count)
                 .Select(GetNumberAlignment)
                 .ToList();

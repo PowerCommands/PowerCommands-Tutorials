@@ -6,10 +6,10 @@ namespace NhlCommands.Commands;
 [PowerCommandDesign( description: "Fetch season player stats from nhl.com",
                         useAsync: true,
                          options: "no-save",
-                         example: "//Fetch the season 2022/2023 stats|fetch 2023")]
-public class FetchCommand : NhlBaseCommand
+                         example: "//Fetch the season 2022/2023 stats|stats 2023")]
+public class StatsCommand : NhlBaseCommand
 {
-    public FetchCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
+    public StatsCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
     public override async Task<RunResult> RunAsync()
     {
         var seasonId = Input.FirstArgumentToInt();
