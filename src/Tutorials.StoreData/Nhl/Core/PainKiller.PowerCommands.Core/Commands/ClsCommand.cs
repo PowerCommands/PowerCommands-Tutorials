@@ -9,6 +9,7 @@
         public override RunResult Run()
         {
             Console.Clear();
+            Console.WriteLine("\x1b[3J");
             return Ok();
         }
     }

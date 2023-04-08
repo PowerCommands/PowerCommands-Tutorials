@@ -39,16 +39,21 @@ public static class ConsoleTableService
             row = row.Replace("+-", "").Replace("-+", "").Replace(" |", "").Replace("| ", "");
             if (rowIndex < 3)
             {
+                var foregroundColor = Console.ForegroundColor;
                 var color = Console.BackgroundColor;
                 Console.BackgroundColor = ConsoleColor.White;
-                consoleWriter.WriteHeadLine(row);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                consoleWriter.Write(row);
                 Console.BackgroundColor = color;
+                Console.ForegroundColor = foregroundColor;
+                Console.WriteLine();
                 continue;
             }
             var color2 = Console.BackgroundColor;
             Console.BackgroundColor = ConsoleColor.DarkCyan;
-            consoleWriter.WriteLine(row);
+            consoleWriter.Write(row);
             Console.BackgroundColor = color2;
+            Console.WriteLine();
         }
     }
     public static void AddTableColumnRenderDefinitions(string name, IEnumerable<IColumnRender> columnRenderDefinitions)
