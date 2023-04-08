@@ -6,13 +6,13 @@ namespace NhlCommands.Commands;
 [PowerCommandDesign( description: "Fetch season player stats from nhl.com",
                         useAsync: true,
                          options: "no-save",
-                         example: "//Fetch the season 2022/2023 stats|stats 2023")]
+                         example: "//Fetch stats for current season|stats|//Fetch the season 2021/2022 stats|stats 2022|//Fetch stats for a past season and do not save it|stats 2022 --no-save")]
 public class StatsCommand : NhlBaseCommand
 {
     public StatsCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
     public override async Task<RunResult> RunAsync()
     {
-        var seasonId = Input.FirstArgumentToInt();
+        var seasonId = GetSeasonId();
 
         var seasonStats = await GetSeason(seasonId);
         if(seasonStats.Total > 0 && !HasOption("no-save")) UpdateSeason(seasonStats, seasonId);
@@ -92,6 +92,7 @@ public class StatsCommand : NhlBaseCommand
         season.SeasonId = seasonId;
         var existing = SeasonsDb.SeasonStats.FirstOrDefault(s => s.SeasonId == season.SeasonId);
         if (existing != null) SeasonsDb.SeasonStats.Remove(existing);
+        season.Updated = DateTime.Now;
         SeasonsDb.SeasonStats.Add(season);
         SaveSeasonsDB();
         WriteSuccessLine($"Season {seasonId - 1}{seasonId} saved!");

@@ -6,7 +6,7 @@ namespace NhlCommands.Commands;
 [PowerCommandDesign( description: "Fetch draft data from NHL api to build up your base data or just display drafts from the local database file.",
                          options: "year|take|countries|!start-year|update",
                         useAsync: true,
-                     suggestions: "SWE|FIN|CAN|USA",
+                     suggestions: "SWE|FIN|CAN|USA|CZE|SVK|DEU|NOR|DNK|NLD|BLR|CHE|LVA|RUS",
                          example: "draft")]
 public class DraftCommand : NhlBaseCommand
 {

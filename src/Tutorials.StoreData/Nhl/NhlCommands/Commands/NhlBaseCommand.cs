@@ -88,4 +88,15 @@ public abstract class NhlBaseCommand : CommandBase<PowerCommandsConfiguration>
         }
         return new DraftPick();
     }
+    protected int GetSeasonId()
+    {
+        var seasonId = Input.FirstArgumentToInt();
+        if(seasonId == 0) seasonId = DateTime.Now.Month < 9 ? seasonId = DateTime.Now.Year : DateTime.Now.Year+1;   //The current season is the year that the season ends
+        return seasonId;
+    }
+    protected List<string> GetNations()
+    {
+        var knownNations = "SWE|FIN|CAN|USA|CZE|SVK|DEU|NOR|DNK|NLD|BLR|CHE|LVA|RUS".Split('|');
+        return Input.Arguments.Select(argument => knownNations.FirstOrDefault(n => n == argument)).Where(nation => !string.IsNullOrEmpty(nation)).ToList()!;
+    }
 }
