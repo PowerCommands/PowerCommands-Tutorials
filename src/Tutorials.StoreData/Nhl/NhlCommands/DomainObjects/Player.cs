@@ -1,6 +1,8 @@
-﻿namespace NhlCommands.DomainObjects;
+﻿using NhlCommands.Contracts;
 
-public class Player
+namespace NhlCommands.DomainObjects;
+
+public class Player : INationality
 {
     public int Id { get; set; }
     public string FullName { get; set; }

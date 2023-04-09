@@ -30,14 +30,9 @@ public class PointsCommand : NhlBaseCommand
             else if(nations.Count > 0 && nations.Any(n => string.Equals(player.Nationality, n, StringComparison.CurrentCultureIgnoreCase))) pointsTable.Add(pointTableItem);
         }
         ConsoleTableService.RenderTable(pointsTable, this);
-        if (nations.Count > 1)
-        {
-            foreach (var nation in nations)
-            {
-                var nationCount = pointsTable.Count(p => p.Nationality.Equals(nation, StringComparison.CurrentCultureIgnoreCase));
-                WriteHeadLine($"{nation}: {nationCount}");
-            }
-        }
+
+        WriteNationsSummary(pointsTable);
+        
         WriteSuccessLine($"Total count: {pointsTable.Count}");
         WriteSuccessLine($"Last updated: {season.Updated}");
         return Ok();

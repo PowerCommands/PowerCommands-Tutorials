@@ -1,5 +1,6 @@
 ﻿using NhlCommands.DomainObjects;
 using System.Text.Json;
+using NhlCommands.Contracts;
 
 namespace NhlCommands.Commands;
 
@@ -99,4 +100,15 @@ public abstract class NhlBaseCommand : CommandBase<PowerCommandsConfiguration>
         var knownNations = "SWE|FIN|CAN|USA|CZE|SVK|DEU|NOR|DNK|NLD|BLR|CHE|LVA|RUS".Split('|');
         return Input.Arguments.Select(argument => knownNations.FirstOrDefault(n => n == argument)).Where(nation => !string.IsNullOrEmpty(nation)).ToList()!;
     }
+    protected void WriteNationsSummary<T>(List<T> nationalities) where T : INationality
+    {
+        var nations = GetNations();
+        if (nations.Count <= 1) return;
+        var nationsCount = (from nation in nations let count = nationalities.Count(p => !string.IsNullOrEmpty(p.Nationality) &&  p.Nationality.Equals(nation, StringComparison.CurrentCultureIgnoreCase)) select new NationCount { Count = count, Nation = nation }).ToList();
+        foreach (var nationCount in nationsCount.OrderByDescending(n => n.Count))
+        {
+            WriteHeadLine($"{nationCount.Nation}: {nationCount.Count}");
+        }
+    }
+    private class NationCount { public string? Nation { get; init; } public int Count { get; init; }}
 }

@@ -1,4 +1,5 @@
 using NhlCommands.DomainObjects;
+using System.Numerics;
 using System.Text.Json;
 
 namespace NhlCommands.Commands;
@@ -39,25 +40,30 @@ public class DraftCommand : NhlBaseCommand
                     }
                 }
             }
-            var countries = GetOptionValue("countries").Split(',');
+
+            var nations = GetNations();
             var prospects = new List<Prospect>();
             foreach (var draftPick in picks.Take(take))
             {
                 var prospect = ProspectsDb.Prospects.FirstOrDefault(p => p.Id == draftPick.Prospect.Id) ?? new Prospect { BirthCity = "?", BirthCountry = "?", AmateurLeague = new ProspectAmateurLeague { Name = "?" }, AmateurTeam = new ProspectAmateurTeam { Name = "?" } };
-                prospects.Add(prospect);
-                if(countries.Length > 0 && countries.All(c => c != $"{prospect.Nationality}")) continue;
-                draftsCount++;
-                WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
-            }
-            WriteLine($"Total drafts count:{draftsCount}");
-            if(countries.Length > 0 )
-            {
-                foreach (var country in countries)
+                if (nations.Count == 0)
                 {
-                    var countryCount = prospects.Count(p => p.BirthCountry == country);
-                    WriteLine($"{country}: {countryCount}");
+                    prospects.Add(prospect);
+                    draftsCount++;
+                    WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
+                    continue;
+                }
+                if(nations.Count > 0 && nations.Any(n => string.Equals(prospect.Nationality, n, StringComparison.CurrentCultureIgnoreCase))) 
+                {
+                    prospects.Add(prospect);
+                    draftsCount++;
+                    WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
                 }
             }
+            WriteLine($"Total drafts count:{draftsCount}");
+            
+            WriteNationsSummary(prospects);
+
             Console.Write(ConfigurationGlobals.Prompt);
         }
         return Ok();

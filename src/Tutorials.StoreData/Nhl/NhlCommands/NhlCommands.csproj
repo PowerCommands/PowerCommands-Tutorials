@@ -24,5 +24,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="BaseDataFiles\" />
+	  <Folder Include="Contracts\" />
 	</ItemGroup>
 </Project>

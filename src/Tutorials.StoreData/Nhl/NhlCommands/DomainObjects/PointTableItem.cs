@@ -1,6 +1,8 @@
-﻿namespace NhlCommands.DomainObjects;
+﻿using NhlCommands.Contracts;
 
-public class PointTableItem
+namespace NhlCommands.DomainObjects;
+
+public class PointTableItem : INationality
 {
     public int Place { get; set; }
     public string FullName { get; set; }

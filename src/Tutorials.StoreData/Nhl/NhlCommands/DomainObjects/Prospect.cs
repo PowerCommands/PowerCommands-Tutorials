@@ -1,6 +1,8 @@
-﻿namespace NhlCommands.DomainObjects;
+﻿using NhlCommands.Contracts;
 
-public class Prospect
+namespace NhlCommands.DomainObjects;
+
+public class Prospect : INationality
 {
     public int Id { get; set; }
     public string FullName { get; set; } = string.Empty;
