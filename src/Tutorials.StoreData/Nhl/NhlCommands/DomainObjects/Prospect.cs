@@ -12,7 +12,7 @@ public class Prospect : INationality
     public string BirthDate { get; set; } = string.Empty;
     public string BirthCity { get; set; } = string.Empty;
     public string BirthCountry { get; set; } = string.Empty;
-    public string Nationality { get; set; }
+    public string Nationality { get; set; } = string.Empty;
     public string Height { get; set; } = string.Empty;
     public int Weight { get; set; }
     public string ShootsCatches { get; set; } = string.Empty;
@@ -22,4 +22,5 @@ public class Prospect : INationality
     public ProspectCategory ProspectCategory { get; set; }
     public ProspectAmateurTeam AmateurTeam { get; set; }
     public ProspectAmateurLeague AmateurLeague { get; set; }
+    public int Year { get; set; }
 }

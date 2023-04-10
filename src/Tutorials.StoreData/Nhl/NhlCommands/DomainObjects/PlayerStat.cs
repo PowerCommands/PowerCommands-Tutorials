@@ -27,5 +27,5 @@ public class PlayerStat
     public int Shots { get; set; }
     public string SkaterFullName { get; set; } = string.Empty;
     public string TeamAbbrevs { get; set; } = string.Empty;
-    public float TimeOnIcePerGame { get; set; }
+    public float? TimeOnIcePerGame { get; set; }
 }

@@ -14,7 +14,7 @@ public class PlayerCommand : NhlBaseCommand
         var nationality = GetOptionValue("nationality");
         var nameSearch = string.IsNullOrEmpty(Input.SingleQuote) ? Input.SingleArgument : Input.SingleQuote.ToLower();
 
-        var players = PlayersDb.People.Where(p => p.Drafted != undrafted && (p.Nationality == nationality || string.IsNullOrEmpty(nationality)) && p.FullName.ToLower().Contains(nameSearch));
+        var players = DatabaseManager.PlayersDb.People.Where(p => p.Drafted != undrafted && (p.Nationality == nationality || string.IsNullOrEmpty(nationality)) && p.FullName.ToLower().Contains(nameSearch));
 
         foreach (var player in players) WriteLine($"{player.FullName} {player.Nationality} {player.BirthDate}");
         return Ok();
