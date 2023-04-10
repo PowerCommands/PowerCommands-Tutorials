@@ -115,10 +115,7 @@ public abstract class NhlBaseCommand : CommandBase<PowerCommandsConfiguration>
         var nations = GetNations();
         if (nations.Count <= 1) return;
         var nationsCount = (from nation in nations let count = nationalities.Count(p => !string.IsNullOrEmpty(p.Nationality) &&  p.Nationality.Equals(nation, StringComparison.CurrentCultureIgnoreCase)) select new NationCount { Count = count, Nation = nation }).ToList();
-        foreach (var nationCount in nationsCount.OrderByDescending(n => n.Count))
-        {
-            WriteHeadLine($"{nationCount.Nation}: {nationCount.Count}");
-        }
+        ConsoleTableService.RenderTable(nationsCount, this);
     }
     private class NationCount { public string? Nation { get; init; } public int Count { get; init; }}
 }

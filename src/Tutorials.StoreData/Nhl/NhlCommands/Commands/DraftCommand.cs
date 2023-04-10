@@ -3,7 +3,7 @@ using NhlCommands.DomainObjects;
 namespace NhlCommands.Commands;
 
 [PowerCommandDesign(description: "Fetch draft data from NHL api to build up your base data or just display drafts from the local database file.",
-                         options: "year|take|delete",
+                         options: "year|take|include-all|delete",
                          suggestions: "SWE|FIN|CAN|USA|CZE|SVK|DEU|AUS|CHE|SVN|NOR|DNK|NLD|BLR|LVA|FRA|AUT|GBR|UKR|HRV|LTU|KAZ|POL|NGA|BHS|ITA|RUS",
                          example: "draft")]
 public class DraftCommand : NhlBaseCommand
@@ -46,6 +46,18 @@ public class DraftCommand : NhlBaseCommand
             {
                 prospect = DatabaseManager.ProspectsDb.Prospects.FirstOrDefault(p => p.Year == draftPick.Year && p.FullName == draftPick.Prospect.FullName);
             }
+
+            if (prospect == null)
+            {
+                var people = DatabaseManager.PlayersDb.People.FirstOrDefault(p => p.FullName == draftPick.Prospect.FullName);
+                if (people != null) prospect = new Prospect { AmateurLeague = people.AmateurLeague, Year = draftPick.Year, AmateurTeam = people.AmateurTeam, BirthCity = people.BirthCity, BirthCountry = people.BirthCountry, BirthDate = people.BirthDate, FullName = people.FullName, Nationality = people.Nationality, NhlPlayerId = people.Id };
+            }
+
+            if (prospect == null)
+            {
+                if(HasOption("include-all")) WriteFailureLine($"{draftPick.Year} {draftPick.Prospect.FullName} {draftPick.Prospect.Id} Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
+                continue;
+            }
             if (nations.Count == 0)
             {
                 prospects.Add(prospect);
@@ -57,10 +69,10 @@ public class DraftCommand : NhlBaseCommand
             {
                 prospects.Add(prospect);
                 draftsCount++;
-                WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
+                WriteLine($"{draftPick.Year} {draftPick.Prospect.FullName} {prospect.BirthCity} {prospect.BirthCountry} {prospect.AmateurTeam?.Name}  Round:{draftPick.Round} PickOverall: {draftPick.PickOverall}");
             }
         }
-        WriteLine($"Total drafts count:{draftsCount}");
+        WriteLine($"Total drafts count:{draftsCount}\n");
 
         WriteNationsSummary(prospects);
         return Ok();
