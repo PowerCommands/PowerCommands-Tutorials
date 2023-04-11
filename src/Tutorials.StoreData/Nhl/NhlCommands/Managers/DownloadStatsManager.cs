@@ -7,7 +7,7 @@ public class DownloadStatsManager : DownloadBaseManager
 {
     public DownloadStatsManager(DbManager dbManager, IConsoleWriter writer) : base(dbManager, writer) { }
 
-    public async Task DownloadAsyncAsync(int seasonId)
+    public async Task DownloadAsync(int seasonId)
     {
         var seasonStats = await GetSeason(seasonId);
         if(seasonStats.Total > 0) UpdateSeason(seasonStats, seasonId);

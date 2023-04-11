@@ -13,4 +13,5 @@ public class PointTableItem : INationality
     public int Goals { get; set; }
     public int Assists { get; set; }
     public float? PointsPerGame { get; set; }
+    public string PositionCode { get; set; } = string.Empty;
 }

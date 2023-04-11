@@ -7,7 +7,7 @@ namespace NhlCommands.Managers;
 public class DownloadDraftsManager : DownloadBaseManager
 {
     public DownloadDraftsManager(DbManager dbManager, IConsoleWriter writer) : base(dbManager, writer) { }
-    public async Task UpdateDraftsDB(int startYear)
+    public async Task DownloadAsync(int startYear)
     {
         var draftYears = await GetDrafts(startYear);
         var hasChanges = false;

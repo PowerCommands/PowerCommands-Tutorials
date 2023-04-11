@@ -16,8 +16,11 @@ public class DbCommand : NhlBaseCommand
         WriteMetaData(DatabaseManager.PlayersDb, "Players");
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
-        WriteMetaData(DatabaseManager.SeasonsDb, "Season statistic");
+        WriteMetaData(DatabaseManager.SeasonsDb, "Season individual players statistic");
         if(HasOption("details") && GetOptionValue("details") == "season") WriteSeasonDetails();
+        WriteLine("--------------------------------------------------------------------------------------------------------------------------");
+        WriteLine("");
+        WriteMetaData(DatabaseManager.StandingsDb, "Season team standings statistic");
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
         WriteMetaData(DatabaseManager.DraftsDb, "Drafts");
