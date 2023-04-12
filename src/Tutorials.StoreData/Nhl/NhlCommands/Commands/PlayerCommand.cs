@@ -1,8 +1,11 @@
+using NhlCommands.DomainObjects;
+
 namespace NhlCommands.Commands;
 
 [PowerCommandTest(         tests: " wayne gretzky")]
 [PowerCommandDesign( description: "Search player with filters",
-                         options: "nationality",
+                         options: "goalies|active|un-drafted",
+                     suggestions: "SWE|FIN|CAN|USA|CZE|SVK|DEU|AUS|CHE|SVN|NOR|DNK|NLD|BLR|LVA|FRA|AUT|GBR|UKR|HRV|LTU|KAZ|POL|NGA|BHS|ITA|RUS",
                          example: "search \"wayne gretzky\"")]
 public class PlayerCommand : NhlBaseCommand
 {
@@ -10,9 +13,29 @@ public class PlayerCommand : NhlBaseCommand
 
     public override RunResult Run()
     {
-        var nameSearch = string.IsNullOrEmpty(Input.SingleQuote) ? Input.SingleArgument : Input.SingleQuote.ToLower();
-        var players = DatabaseManager.PlayersDb.People.Where(p => p.FullName.ToLower().Contains(nameSearch));
-        foreach (var player in players) WriteLine($"{player.FullName} {player.Nationality} {player.BirthDate} {player.RosterStatus} {player.Rookie}");
+        var playerDetails = new List<PlayerDetail>();
+        var nations = GetNations();
+
+        var nameSearch = Input.SingleQuote.ToLower();
+        var birthNation = GetOptionValue("birth-nation");
+        var birthYear = Input.OptionToInt("birth-year");
+        var goalies = HasOption("goalies") ? "G" : "";
+        var active = HasOption("active");
+        var unDrafted = HasOption("drafted");
+
+        var players = DatabaseManager.PlayersDb.People.Where(p => (string.IsNullOrEmpty(nameSearch) || p.FullName.ToLower().Contains(nameSearch)) && (string.IsNullOrEmpty(goalies) || p.PrimaryPosition.Code == goalies) && (!active || p.Active) && (!unDrafted || !p.Drafted));
+        foreach (var player in players)
+        {
+            var detail = new PlayerDetail { FullName = player.FullName, PrimaryNumber = player.PrimaryNumber, BirthDate = player.BirthDate, Active = player.Active, Drafted = player.Drafted, Rookie = player.Rookie, PositionCode = player.PrimaryPosition.Code, BirthCity = player.BirthCity, BirthCountry = player.BirthCountry, Nationality = player.Nationality };
+            if (nations.Count == 0) playerDetails.Add(detail);
+            else if (nations.Count > 0 && nations.Any(n => string.Equals(player.Nationality, n, StringComparison.CurrentCultureIgnoreCase))) playerDetails.Add(detail);
+        }
+
+        ConsoleTableService.RenderTable(playerDetails, this);
+
+        WriteNationsSummary(playerDetails);
+
+        WriteCodeExample("Total:",$"{playerDetails.Count}");
         return Ok();
     }
 }

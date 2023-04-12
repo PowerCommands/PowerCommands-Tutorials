@@ -25,7 +25,7 @@ public class GoalsCommand : NhlBaseCommand
 
     private SeasonGoalStats GetGoalStats(int seasonId)
     {
-        var stats = DatabaseManager.SeasonsDb.SeasonStats.FirstOrDefault(s => s.SeasonId == seasonId);
+        var stats = DatabaseManager.SeasonsDb.SkaterStats.FirstOrDefault(s => s.SeasonId == seasonId);
         if (stats == null) return new SeasonGoalStats { Season = $"{GetSeasonForDisplay(seasonId)} LOCKOUT" };
         var standings = DatabaseManager.StandingsDb.Standings.Where(s => s.SeasonId == seasonId);
         var totalGoals = stats.Data.Sum(d => d.Goals);

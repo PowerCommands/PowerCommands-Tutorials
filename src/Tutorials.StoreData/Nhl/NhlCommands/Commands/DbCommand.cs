@@ -31,11 +31,12 @@ public class DbCommand : NhlBaseCommand
         return Ok();
     }
 
-    private void WriteMetaData(IDatabase database, string databaseName)
+    private void WriteMetaData<T>(T database, string databaseName) where T : IDatabase
     {
         WriteHeadLine(databaseName);
         foreach (var description in database.GetDescriptions()) WriteLine(description);
         WriteHeadLine($"Last updated:{database.Updated}");
+        WriteCodeExample("File size:", DatabaseManager.GetFileSize(database.GetType()));
     }
 
     private void WriteDraftDetails()
@@ -58,7 +59,12 @@ public class DbCommand : NhlBaseCommand
 
     private void WriteSeasonDetails()
     {
-        var seasonCounts = DatabaseManager.SeasonsDb.SeasonStats.OrderByDescending(s => s.SeasonId).Select(season => new YearCount { Year = season.SeasonId, Count = season.Total }).ToList();
+        WriteHeadLine("Skaters");
+        var seasonCounts = DatabaseManager.SeasonsDb.SkaterStats.OrderByDescending(s => s.SeasonId).Select(season => new YearCount { Year = season.SeasonId, Count = season.Data.Count }).ToList();
+        ConsoleTableService.RenderTable(seasonCounts, this);
+
+        WriteHeadLine("Goalies");
+        seasonCounts = DatabaseManager.SeasonsDb.GoalieStats.OrderByDescending(s => s.SeasonId).Select(season => new YearCount { Year = season.SeasonId, Count = season.Data.Count }).ToList();
         ConsoleTableService.RenderTable(seasonCounts, this);
     }
 

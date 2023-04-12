@@ -11,10 +11,11 @@ public abstract class NhlBaseCommand : CommandBase<PowerCommandsConfiguration>
     protected int GetSeasonId()
     {
         var seasonId = Input.FirstArgumentToInt();
-        if(seasonId == 0) seasonId = DateTime.Now.Month < 9 ? seasonId = DateTime.Now.Year : DateTime.Now.Year+1;   //The current season is the year that the season ends
+        if(seasonId < 1900) seasonId = DateTime.Now.Month < 9 ? seasonId = DateTime.Now.Year : DateTime.Now.Year+1;   //The current season is the year that the season ends
         return seasonId;
     }
-    protected string GetSeasonForDisplay(int seasonId) => $"{seasonId - 1}{seasonId}";
+    protected int GetCurrentSeason() => DateTime.Now.Month < 9 ? DateTime.Now.Year : DateTime.Now.Year + 1;
+    protected string GetSeasonForDisplay(int seasonId) => $"{seasonId - 1}/{seasonId.ToString().Substring(2,2)}";
     protected List<string> GetNations()
     {
         var knownNations = "SWE|FIN|CAN|USA|CZE|SVK|DEU|NOR|DNK|NLD|BLR|CHE|LVA|RUS".Split('|');

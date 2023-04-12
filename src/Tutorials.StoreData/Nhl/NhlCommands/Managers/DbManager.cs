@@ -31,4 +31,12 @@ public class DbManager
         var fileName = Path.Combine(_path, $"{typeof(T).Name.Replace("Db","").ToLower()}.json");
         return StorageService<T>.Service.GetObject(fileName);
     }
+    public string GetFileSize(Type database)
+    {
+        var fileName = Path.Combine(_path, $"{database.Name.Replace("Db","").ToLower()}.json");
+        if (!File.Exists(fileName)) return $"{fileName} does not exist.";
+        var fileInfo = new FileInfo(fileName);
+        var megaBytes = (fileInfo.Length / 1024) / 1024;
+        return $"{megaBytes} MB";
+    }
 }
