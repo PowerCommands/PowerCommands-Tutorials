@@ -12,7 +12,7 @@ public class PointsCommand : NhlBaseCommand
 
     public override RunResult Run()
     {
-        var start = Input.FirstArgumentToInt();
+        var start = Input.FirstArgumentToInt() == 0 ? GetCurrentSeason() : Input.FirstArgumentToInt();
         var stop = Input.OptionToInt("stop", start)+1;
 
         var stats = new List<SeasonPointStats>();
@@ -22,26 +22,13 @@ public class PointsCommand : NhlBaseCommand
 
         return Ok();
     }
-    private SeasonGoalStats GetGoalStats(int seasonId)
-    {
-        var stats = DatabaseManager.SeasonsDb.SkaterStats.FirstOrDefault(s => s.SeasonId == seasonId);
-        if (stats == null) return new SeasonGoalStats { Season = $"{GetSeasonForDisplay(seasonId)} LOCKOUT" };
-        var standings = DatabaseManager.StandingsDb.Standings.Where(s => s.SeasonId == seasonId);
-        var totalGoals = stats.Data.Sum(d => d.Goals);
-        var totalTeams = standings.SelectMany(standing => standing.Records).Sum(record => record.TeamRecords.Length);
-        var totalGames = (from standing in standings from record in standing.Records from teamRecord in record.TeamRecords select teamRecord.GamesPlayed).Sum()/2;
-        
-        var goalsPerGame = (decimal)totalGoals / totalGames;
-
-        return new SeasonGoalStats{Goals = totalGoals, GoalsPerGame = Math.Round(goalsPerGame,2), Matches = totalGames,Season = GetSeasonForDisplay(seasonId),Teams = totalTeams};
-    }
     private SeasonPointStats GetPointStats(int seasonId)
     {
         var stats = DatabaseManager.SeasonsDb.SkaterStats.FirstOrDefault(s => s.SeasonId == seasonId);
         if (stats == null) return new SeasonPointStats { Season = $"{GetSeasonForDisplay(seasonId)}", Status = "LOCKOUT", Winner = "-",Nation = "-"};
         var standings = DatabaseManager.StandingsDb.Standings.Where(s => s.SeasonId == seasonId).ToList();
         
-        var totalGames = (from standing in standings from record in standing.Records from teamRecord in record.TeamRecords select teamRecord.GamesPlayed).Sum()/2;
+        
         var rounds = standings.First().Records.First().TeamRecords.First().GamesPlayed;
         var status = seasonId > 1993 && rounds < 82 ? "Interrupted" : "Completed";
         if (seasonId == GetCurrentSeason() && DateTime.Now.Month < 5) status = "Current";

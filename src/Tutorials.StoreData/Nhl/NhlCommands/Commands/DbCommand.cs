@@ -4,8 +4,6 @@ namespace NhlCommands.Commands;
 
 [PowerCommandTest(         tests: " ")]
 [PowerCommandDesign( description: "Shows metadata about the database",
-                         options: "details",
-                     suggestions: "season|drafts",
                          example: "db")]
 public class DbCommand : NhlBaseCommand
 {
@@ -17,14 +15,14 @@ public class DbCommand : NhlBaseCommand
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
         WriteMetaData(DatabaseManager.SeasonsDb, "Season individual players statistic");
-        if(HasOption("details") && GetOptionValue("details") == "season") WriteSeasonDetails();
+        WriteSeasonDetails();
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
         WriteMetaData(DatabaseManager.StandingsDb, "Season team standings statistic");
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
         WriteMetaData(DatabaseManager.DraftsDb, "Drafts");
-        if(HasOption("details") && GetOptionValue("details") == "drafts") WriteDraftDetails();
+        WriteDraftDetails();
         WriteLine("--------------------------------------------------------------------------------------------------------------------------");
         WriteLine("");
         WriteMetaData(DatabaseManager.ProspectsDb, "Prospects");
@@ -54,18 +52,17 @@ public class DbCommand : NhlBaseCommand
             }
             draftCounts.Add(new YearCount{Year = draftYear.Year, Count = yearCount});
         }
-        ConsoleTableService.RenderTable(draftCounts, this);
+        WriteCodeExample("Drafts", $"{draftCounts.Sum(d => d.Count)}");
     }
 
     private void WriteSeasonDetails()
     {
-        WriteHeadLine("Skaters");
-        var seasonCounts = DatabaseManager.SeasonsDb.SkaterStats.OrderByDescending(s => s.SeasonId).Select(season => new YearCount { Year = season.SeasonId, Count = season.Data.Count }).ToList();
-        ConsoleTableService.RenderTable(seasonCounts, this);
+        var seasonCount = DatabaseManager.SeasonsDb.SkaterStats.SelectMany(s => s.Data).Count();
+        WriteCodeExample("Skaters", $"{seasonCount}");
 
         WriteHeadLine("Goalies");
-        seasonCounts = DatabaseManager.SeasonsDb.GoalieStats.OrderByDescending(s => s.SeasonId).Select(season => new YearCount { Year = season.SeasonId, Count = season.Data.Count }).ToList();
-        ConsoleTableService.RenderTable(seasonCounts, this);
+        seasonCount = DatabaseManager.SeasonsDb.GoalieStats.SelectMany(s => s.Data).Count();
+        WriteCodeExample("Goalies", $"{seasonCount}");
     }
 
     class YearCount{ public int Year { get; set; } public int Count { get; set; }}

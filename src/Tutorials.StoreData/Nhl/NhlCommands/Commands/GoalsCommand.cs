@@ -12,7 +12,7 @@ public class GoalsCommand : NhlBaseCommand
 
     public override RunResult Run()
     {
-        var start = Input.FirstArgumentToInt();
+        var start = Input.FirstArgumentToInt() == 0 ? GetCurrentSeason() : Input.FirstArgumentToInt();
         var stop = Input.OptionToInt("stop", start)+1;
 
         var goalStats = new List<SeasonGoalStats>();
