@@ -2,20 +2,20 @@ using NhlCommands.Managers;
 
 namespace NhlCommands.Commands;
 
-[PowerCommandDesign( description: "Download data from nhl.com",
-                         options: "skaters|goalies|standings|drafts|integrity",
+[PowerCommandDesign( description: "Download data from nhl.com, skaters stats is default and does not explicit have to been set by option.",
+                         options: "goalies|standings|drafts|find-missing-players",
                          useAsync: true,
-                         example: "//Download new player statistic for current season|download --stats|//Download new player statistic for season 2000|download 2000 --stats")]
+                         example: "//Download skater statistic for current season|download|//Download skater statistic for season 2000|download 2000|//Download goalies statistic for every skater seasons previously downloaded.|download --goalies|//Look for players that are missing and download them.|download --find-missing-players|//Download drafts (and prospects) from 2010 until an already existing year.|download 2010 --drafts|//Download NHL team standings from the min skaters year downloaded to current season|download --standings ")]
 public class DownloadCommand : NhlBaseCommand
 {
     public DownloadCommand(string identifier, PowerCommandsConfiguration configuration) : base(identifier, configuration) { }
     public override async Task<RunResult> RunAsync()
     {
         if (HasOption("drafts")) await DownloadDrafts();
-        if (HasOption("skaters")) await DownloadSkaterStats();
-        if (HasOption("goalies")) await DownloadGoaliesStats();
-        if (HasOption("standings")) await DownloadStandings();
-        if (HasOption("integrity")) await DownloadMissingPlayers();
+        else if (HasOption("goalies")) await DownloadGoaliesStats();
+        else if (HasOption("standings")) await DownloadStandings();
+        else if (HasOption("find-missing-players")) await DownloadMissingPlayers();
+        else await DownloadSkaterStats();
         Write(ConfigurationGlobals.Prompt);
         return Ok();
     }
@@ -46,7 +46,7 @@ public class DownloadCommand : NhlBaseCommand
 
     public async Task DownloadStandings()
     {
-        var minSavedSeason = DatabaseManager.DraftsDb.DraftYears.Min(d => d.Year);
+        var minSavedSeason = Input.FirstArgumentToInt();
         
         var startSeason = minSavedSeason == 0 ? DatabaseManager.SeasonsDb.SkaterStats.Min(s => s.SeasonId) : minSavedSeason;
         var stopSeason = GetSeasonId();

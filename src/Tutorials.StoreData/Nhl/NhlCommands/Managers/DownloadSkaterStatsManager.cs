@@ -32,7 +32,7 @@ public class DownloadSkaterStatsManager : DownloadBaseManager
             Writer.WriteLine($"{rank}. {player.SkaterFullName} {nationality} {player.Points} ({player.Goals}+{player.Assists}) {player.TeamAbbrevs}");
             rank++;
         }
-        Writer.WriteSuccess($"{seasonStats.Data.Count} skaters fetched from nhl.com\n");
+        Writer.WriteSuccess($"\n{seasonStats.Data.Count} skaters fetched from nhl.com\n");
         if (newNhlPlayerFound)
         {
             DBManager.PlayersDb.Updated = DateTime.Now;

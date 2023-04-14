@@ -10,16 +10,20 @@ public class DownloadGoalieStatsManager : DownloadBaseManager
     public async Task DownloadAsync()
     {
         var newNhlPlayerFound = false;
+        var noOverwrite = false;
+        int currentSeason = DateTime.Now.Month < 9 ? DateTime.Now.Year : DateTime.Now.Year + 1;
+
         foreach (var seasonStat in DBManager.SeasonsDb.SkaterStats.OrderBy(s => s.SeasonId))
         {
             var seasonId = seasonStat.SeasonId;
             Writer.WriteHeadLine($"Season {seasonId}");
 
             var exists = DBManager.SeasonsDb.GoalieStats.FirstOrDefault(g => g.SeasonId == seasonId);
-            if (exists != null)
+            if (exists != null && seasonId != currentSeason)
             {
-                var yes = DialogService.YesNoDialog("This season already exists, continue anyway?");
-                if(!yes) continue;
+                if(noOverwrite) continue;
+                noOverwrite = !DialogService.YesNoDialog("This season already exists, continue anyway?");
+                if(noOverwrite) continue;
             }
             var seasonStats = await GetSeason(seasonId);
             if(seasonStats.Total > 0) UpdateGoalie(seasonStats, seasonId);
@@ -43,7 +47,7 @@ public class DownloadGoalieStatsManager : DownloadBaseManager
                 Writer.WriteLine($"{rank}. {player.GoalieFullName} {nationality} {player.Points} ({player.Goals}+{player.Assists}) {player.TeamAbbrevs}");
                 rank++;
             }
-            Writer.WriteSuccess($"{seasonStats.Data.Count} goalies fetched from nhl.com\n");
+            Writer.WriteSuccess($"\n{seasonStats.Data.Count} goalies fetched from nhl.com\n");
         }
         if (newNhlPlayerFound)
         {
